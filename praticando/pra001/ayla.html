@@ -3,75 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ayla Adventure - Mobile</title>
+    <title>Ayla Adventure - Mobile Responsivo</title>
     <style>
-        body { margin: 0; overflow: hidden; background: #222; font-family: 'Comic Sans MS', sans-serif; touch-action: manipulation; }
-        #game-viewport {
-            width: 800px; height: 450px; margin: 20px auto;
-            position: relative; overflow: hidden; border: 8px solid #FFB6C1;
-            border-radius: 20px; background: #87CEEB; box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        body { 
+            margin: 0; 
+            padding: 0;
+            overflow: hidden; 
+            background: #222; 
+            font-family: 'Comic Sans MS', sans-serif; 
+            touch-action: manipulation;
         }
+
+        /* AJUSTE RESPONSIVO: Ocupa a tela inteira do celular */
+        #game-viewport {
+            width: 100vw; 
+            height: 56.25vw; /* Proporção 16:9 */
+            max-height: 100vh;
+            max-width: 177.78vh; /* Proporção 16:9 */
+            margin: auto;
+            position: absolute;
+            top: 0; bottom: 0; left: 0; right: 0;
+            overflow: hidden; 
+            background: #87CEEB;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        }
+
         #world { position: absolute; top: 0; left: 0; width: 1000000px; height: 100%; display: none; }
         
         #parallax-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('imagens/fundo.png'); background-size: contain; background-repeat: repeat-x; z-index: 1;
+            background-image: url('imagens/fundo.png'); background-size: cover; background-repeat: repeat-x; z-index: 1;
         }
+        
         #ground {
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 75px;
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 15%;
             background-image: url('imagens/chao.png'); background-size: contain; background-repeat: repeat-x; z-index: 10;
         }
 
-        /* Controles Mobile */
-        #controls {
-            position: fixed; bottom: 20px; left: 0; width: 100%;
-            display: flex; justify-content: space-between; padding: 0 30px;
+        /* CONTROLES MOBILE */
+        #mobile-controls {
+            position: fixed; bottom: 10px; left: 0; width: 100%;
+            display: flex; justify-content: space-between; padding: 0 20px;
             z-index: 5000; pointer-events: none;
         }
         .control-btn {
-            width: 70px; height: 70px; background: rgba(255, 255, 255, 0.4);
+            width: 60px; height: 60px; background: rgba(255, 255, 255, 0.5);
             border-radius: 50%; display: flex; justify-content: center;
-            align-items: center; font-size: 30px; color: white;
-            border: 4px solid #FFB6C1; pointer-events: auto;
-            user-select: none; -webkit-tap-highlight-color: transparent;
+            align-items: center; font-size: 25px; border: 3px solid #FFB6C1;
+            pointer-events: auto; user-select: none; -webkit-tap-highlight-color: transparent;
         }
-        .left-group { display: flex; gap: 15px; }
+        .move-btns { display: flex; gap: 10px; }
 
-        /* Estilos Base */
+        /* INTERFACE */
+        #ui-left { position: absolute; top: 10px; left: 10px; color: #ff1493; font-size: 18px; font-weight: bold; text-shadow: 1px 1px #fff; z-index: 2000; }
+        #ui-right { position: absolute; top: 10px; right: 10px; color: #FFD700; font-size: 18px; font-weight: bold; text-shadow: 1px 1px #000; z-index: 2000; }
+
+        /* PERSONAGEM E ELEMENTOS */
+        #ayla { width: 12%; height: 20%; position: absolute; z-index: 1000; margin-bottom: -1%; }
+        #ayla img { width: 100%; height: 100%; object-fit: contain; }
+        .enemy { width: 10%; height: 15%; position: absolute; z-index: 900; }
+        .enemy img { width: 100%; height: 100%; object-fit: contain; }
+        .star { position: absolute; width: 30px; height: 30px; z-index: 50; }
+        .platform { position: absolute; background: #8B4513; border: 2px solid #5D2E0A; border-radius: 5px; z-index: 5; }
+
+        /* TELAS */
         #start-screen, #game-over {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); display: flex; flex-direction: column;
             justify-content: center; align-items: center; z-index: 4000; color: white; text-align: center;
         }
-        #game-over { display: none; }
-        .btn { padding: 15px 30px; font-size: 22px; cursor: pointer; background: #ff1493; color: white; border: none; border-radius: 15px; margin-top: 20px; }
-        
-        #ui-left { position: absolute; top: 20px; left: 20px; color: #ff1493; font-size: 24px; font-weight: bold; text-shadow: 2px 2px #fff; z-index: 2000; }
-        #ui-right { position: absolute; top: 20px; right: 20px; color: #FFD700; font-size: 24px; font-weight: bold; text-shadow: 2px 2px #000; z-index: 2000; }
-        .platform { position: absolute; background: #8B4513; border: 3px solid #5D2E0A; border-radius: 8px; z-index: 5; }
-        #ayla { width: 80px; height: 80px; position: absolute; z-index: 1000; margin-bottom: -5px; }
-        #ayla img { width: 100%; height: 100%; object-fit: contain; }
-        .enemy { width: 65px; height: 65px; position: absolute; z-index: 900; margin-bottom: -5px; }
-        .enemy img { width: 100%; height: 100%; object-fit: contain; }
-        .star { position: absolute; width: 35px; height: 35px; z-index: 50; }
-        .facing-left { transform: scaleX(-1); }
     </style>
 </head>
 <body>
 
 <div id="game-viewport">
     <div id="start-screen">
-        <h1 style="color: #ff1493; font-size: 50px; text-shadow: 3px 3px white;">Aventura da Ayla</h1>
-        <button class="btn" onclick="startGame()">Começar Jogo</button>
+        <h1 style="color: #ff1493; font-size: 8vw;">Aventura da Ayla</h1>
+        <button style="padding: 10px 20px; font-size: 20px; border-radius: 10px; background: #ff1493; color: white; border: none;" onclick="startGame()">JOGAR</button>
     </div>
 
     <div id="ui-left">⭐ <span id="score">0</span> | ❤️ <span id="lives">3</span></div>
     <div id="ui-right">🏆 <span id="high-score">0</span></div>
 
-    <div id="game-over">
-        <h1 style="color: red;">Fim de Jogo!</h1>
-        <ul id="ranking-list" style="list-style:none; color: gold; padding:0;"></ul>
-        <button class="btn" onclick="location.reload()">Tentar de Novo</button>
+    <div id="game-over" style="display: none;">
+        <h2 style="color: red;">Fim de Jogo!</h2>
+        <ul id="ranking-list" style="list-style:none; padding:0; color: gold;"></ul>
+        <button onclick="location.reload()" style="padding: 10px; border-radius: 10px;">Tentar Novamente</button>
     </div>
 
     <div id="world">
@@ -81,8 +98,8 @@
     </div>
 </div>
 
-<div id="controls">
-    <div class="left-group">
+<div id="mobile-controls">
+    <div class="move-btns">
         <div class="control-btn" id="btnLeft">⬅️</div>
         <div class="control-btn" id="btnRight">➡️</div>
     </div>
@@ -90,37 +107,21 @@
 </div>
 
 <script>
-    const world = document.getElementById('world');
-    const ayla = document.getElementById('ayla');
-    const bg = document.getElementById('parallax-bg');
-    const ground = document.getElementById('ground');
-    const scoreEl = document.getElementById('score');
-    const livesEl = document.getElementById('lives');
-    const highScoreEl = document.getElementById('high-score');
+    const world = document.getElementById('world'), ayla = document.getElementById('ayla');
+    const scoreEl = document.getElementById('score'), livesEl = document.getElementById('lives');
+    
+    // Altura proporcional para o chão
+    const getGroundY = () => window.innerHeight * 0.12; 
+    let player = { x: 50, y: 60, velX: 0, velY: 0, isGrounded: true, lives: 3, score: 0 };
+    let cameraX = 0, lastGenX = 400, gameActive = false, keys = {};
 
-    const CHAO_COLISAO = 55;
-    let player = { x: 100, y: CHAO_COLISAO, velX: 0, velY: 0, isGrounded: true, lives: 3, score: 0, invencivel: false };
-    let cameraX = 0, lastGenX = 500, gameActive = false;
-    const keys = {};
-
-    // Recordes
-    let highScore = localStorage.getItem('aylaHighScore') || 0;
-    highScoreEl.innerText = highScore;
-
-    // Funções de Controle por Toque
-    const setupTouch = (id, key) => {
+    // Captura toques
+    const bindTouch = (id, key) => {
         const btn = document.getElementById(id);
-        btn.addEventListener('touchstart', (e) => { e.preventDefault(); keys[key] = true; });
-        btn.addEventListener('touchend', (e) => { e.preventDefault(); keys[key] = false; });
+        btn.addEventListener('touchstart', e => { e.preventDefault(); keys[key] = true; });
+        btn.addEventListener('touchend', e => { e.preventDefault(); keys[key] = false; });
     };
-
-    setupTouch('btnLeft', 'ArrowLeft');
-    setupTouch('btnRight', 'ArrowRight');
-    setupTouch('btnJump', 'Space');
-
-    // Teclado (ainda funciona no PC)
-    window.onkeydown = e => keys[e.code] = true;
-    window.onkeyup = e => keys[e.code] = false;
+    bindTouch('btnLeft', 'ArrowLeft'); bindTouch('btnRight', 'ArrowRight'); bindTouch('btnJump', 'Space');
 
     function startGame() {
         document.getElementById('start-screen').style.display = 'none';
@@ -129,51 +130,24 @@
         gameLoop();
     }
 
-    function spawnElements() {
-        if (lastGenX < player.x + 1000) {
-            if (Math.random() > 0.7) { 
-                let p = document.createElement('div');
-                p.className = 'platform';
-                p.style.left = lastGenX + 'px';
-                p.style.bottom = (170 + Math.random() * 70) + 'px';
-                p.style.width = '140px'; p.style.height = '18px';
-                world.appendChild(p);
-            }
-            if (Math.random() > 0.6) {
-                let e = document.createElement('div');
-                e.className = 'enemy';
-                e.style.left = (lastGenX + 500) + 'px';
-                e.style.bottom = CHAO_COLISAO + 'px';
-                const isBowser = Math.random() > 0.8;
-                e.innerHTML = `<img src="imagens/${isBowser ? 'bowse.png' : 'capanga.png'}">`;
-                e.dataset.type = isBowser ? "bowser" : "capanga";
-                world.appendChild(e);
-            }
-            lastGenX += 800;
-        }
-    }
-
     function gameLoop() {
         if (!gameActive) return;
-        if (player.lives <= 0) { gameActive = false; document.getElementById('game-over').style.display = 'flex'; return; }
+        if (player.lives <= 0) { document.getElementById('game-over').style.display = 'flex'; return; }
 
-        if (keys['ArrowRight'] || keys['KeyD']) { player.velX = Math.min(player.velX + 0.6, 7); ayla.classList.remove('facing-left'); } 
-        else if (keys['ArrowLeft'] || keys['KeyA']) { player.velX = Math.max(player.velX - 0.6, -7); ayla.classList.add('facing-left'); } 
-        else { player.velX *= 0.85; }
+        if (keys['ArrowRight']) { player.velX = Math.min(player.velX + 0.5, 6); ayla.style.transform = "scaleX(1)"; }
+        else if (keys['ArrowLeft']) { player.velX = Math.max(player.velX - 0.5, -6); ayla.style.transform = "scaleX(-1)"; }
+        else { player.velX *= 0.8; }
 
-        if ((keys['Space'] || keys['ArrowUp'] || keys['KeyW']) && player.isGrounded) { player.velY = 16; player.isGrounded = false; }
+        if (keys['Space'] && player.isGrounded) { player.velY = 15; player.isGrounded = false; }
 
-        player.velY -= 0.8; player.x += player.velX; player.y += player.velY;
-        if (player.y <= CHAO_COLISAO) { player.y = CHAO_COLISAO; player.velY = 0; player.isGrounded = true; }
+        player.velY -= 0.7; player.x += player.velX; player.y += player.velY;
 
-        cameraX = Math.max(0, player.x - 300);
+        if (player.y <= 60) { player.y = 60; player.velY = 0; player.isGrounded = true; }
+
+        cameraX = Math.max(0, player.x - 150);
         ayla.style.left = player.x + 'px'; ayla.style.bottom = player.y + 'px';
         world.style.transform = `translateX(${-cameraX}px)`;
-        bg.style.transform = `translateX(${cameraX}px)`;
-        ground.style.transform = `translateX(${cameraX}px)`;
-        ground.style.backgroundPositionX = `${-cameraX}px`;
 
-        spawnElements();
         requestAnimationFrame(gameLoop);
     }
 </script>
