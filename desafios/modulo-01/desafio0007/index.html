@@ -2,15 +2,30 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Imagem Flexível</title>
+    <title>Imagens resposivas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
 </head>
 <body>
-    <main>
-        <h1>Imagem Flexível</h1>
-        <p>Você está vendo a imagem completa? Experimente ampliar o tamanho da sua janela para aproveitar a melhor experiêcia 🤯</p>
-    </main>
+    <h1>Imagem Flexivel</h1>
+    <p>Você está vendo a imagem completa? Experimente ampliar o tamanho da sua janela para aproveitar a melhor experiêcia 🤯</p>   
+    <picture>
+        <source media="(max-width: 768px)" srcset="imagens/paisagem-p.png">
+        
+        <source media="(max-width: 1207px)" srcset="imagens/paisagem-m.png">
+        
+        <img src="imagens/paisagem-g.png" alt="mulher de branco olhando para o horizonte">
+    </picture>
     
 </body>
 </html>
